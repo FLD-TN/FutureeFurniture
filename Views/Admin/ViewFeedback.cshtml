@@ -1,0 +1,115 @@
+@model List<Feedback>
+
+<div class="container-fluid px-4">
+    <h2 class="mt-4 text-center text-uppercase fw-bold">Quản Lý Đánh Giá</h2>
+
+    <!-- Search và Filter -->
+    <div class="card my-4">
+        <div class="card-body">
+            <form method="get" class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label">Tìm kiếm</label>
+                    <input type="text" name="searchTerm" class="form-control" 
+                           placeholder="Nội dung, tên khách hàng..." value="@ViewBag.CurrentSearch">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Đánh giá</label>
+                    <select name="rating" class="form-select">
+                        <option value="">Tất cả</option>
+                        @for (int i = 1; i <= 5; i++)
+                        {
+                            <option value="@i" selected="@(ViewBag.SelectedRating == i)">
+                                @i sao
+                            </option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Từ ngày</label>
+                    <input type="date" name="fromDate" class="form-control" value="@ViewBag.FromDate">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Đến ngày</label>
+                    <input type="date" name="toDate" class="form-control" value="@ViewBag.ToDate">
+                </div>
+                <div class="col-12">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-search"></i> Tìm kiếm
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Danh sách đánh giá -->
+    <div class="card">
+        <div class="card-body">
+            @foreach (var feedback in Model)
+            {
+                <div class="d-flex mb-4 p-3 border rounded">
+                    @if (feedback.Rating == 0) // Đây là tin nhắn liên hệ
+                    {
+                        <!-- Avatar mặc định cho tin nhắn liên hệ -->
+                        <div class="flex-shrink-0">
+                            <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center"
+                                 style="width: 64px; height: 64px;">
+                                <i class="fas fa-envelope text-white fs-3"></i>
+                            </div>
+                        </div>
+                    }
+                    else // Đây là đánh giá sản phẩm
+                    {
+                        <!-- Avatar khách hàng -->
+                        <div class="flex-shrink-0">
+                            <img src="~/customer_images/@(feedback.Customer?.customer_image ?? "default-avatar.png")"
+                                 alt="@feedback.Customer?.customer_name"
+                                 class="rounded-circle"
+                                 style="width: 64px; height: 64px; object-fit: cover;">
+                        </div>
+                    }
+                    <!-- Nội dung đánh giá -->
+                    <div class="ms-3 flex-grow-1">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h5 class="mb-0">
+                                @if (feedback.Rating == 0)
+                                {
+                                    @feedback.user_name <span class="badge bg-info text-dark ms-2">Liên hệ</span>
+                                }
+                                else
+                                {
+                                    @feedback.Customer?.customer_name
+                                }
+                            </h5>
+                        </div>
+                        <p class="mb-1">
+                            @if (feedback.Rating == 0)
+                            {
+                                @feedback.user_message
+                            }
+                            else
+                            {
+                                @feedback.Content
+                            }
+                        </p>
+                        <small class="text-muted">@feedback.CreatedAt.ToString("dd/MM/yyyy HH:mm")</small>
+                    </div>
+                </div>
+            }
+
+            <!-- Phân trang -->
+            @if (ViewBag.TotalPages > 1)
+            {
+                <nav aria-label="Page navigation" class="mt-4">
+                    <ul class="pagination justify-content-center">
+                        @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                        {
+                            <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                                <a class="page-link" href="@Url.Action("ViewFeedback", new { page = i })">@i</a>
+                            </li>
+                        }
+                    </ul>
+                </nav>
+            }
+        </div>
+    </div>
+</div>

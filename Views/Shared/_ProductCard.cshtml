@@ -1,0 +1,96 @@
+﻿@model MTKPM_FE.Models.Product
+@using System.Globalization
+
+@{
+    var viVN = new CultureInfo("vi-VN");
+
+    // Lấy giá giảm nếu có, nếu không thì giá gốc
+    int dp = Model.product_discount_price ?? Model.product_price;
+    bool isDiscounted = Model.product_discount_price.HasValue;
+
+    // Tính % giảm giá, luôn dùng dp (không cần .Value)
+    int discountPercent = isDiscounted
+        ? (int)Math.Round(100.0 * (Model.product_price - dp) / Model.product_price)
+        : 0;
+
+    // Giá cuối cùng
+    int finalPrice = dp;
+
+    // Định dạng số
+    string priceFormat = finalPrice.ToString("N0", viVN);
+    string originalPriceFormat = Model.product_price.ToString("N0", viVN);
+
+    // Đánh giá
+    string rating = Model.product_rating.ToString("0.0", viVN);
+}
+
+<style>
+    .btn-outline-green {
+        border: 1.5px solid #8B6F5A;
+        color: #8B6F5A;
+        background-color: #fff;
+        transition: background 0.2s, color 0.2s;
+    }
+
+        .btn-outline-green:hover,
+        .btn-outline-green:focus {
+            background-color: #8B6F5A;
+            color: #fff;
+            border-color: #8B6F5A;
+        }
+</style>
+
+<div class="col-12 col-sm-6 col-md-3 mb-4">
+    <div class="product-card h-100">
+        <a asp-action="ProductDetail"
+           asp-controller="Home"
+           asp-route-id="@Model.product_id"
+           class="text-decoration-none">
+            <img src="~/product_images/@Model.product_image"
+                 class="product-card-img"
+                 alt="@Model.product_name" />
+        </a>
+
+        <div class="product-card-body d-flex flex-column">
+            <div class="d-flex justify-content-between small text-muted mb-1">
+                <span>
+                    <i class="fas fa-star text-warning"></i> @rating (@Model.product_review_count)
+                </span>
+                <span>Đã bán: @Model.product_sold</span>
+            </div>
+
+            <h6 class="product-card-title" title="@Model.product_name">
+                @Model.product_name
+            </h6> 
+
+            @if (isDiscounted)
+            {
+                <div class="mb-2 d-flex align-items-center">
+                    <span class="product-price">@priceFormat ₫</span>
+                    <span class="product-price-old">@originalPriceFormat ₫</span>
+                    <span class="product-badge">-@discountPercent%</span>
+                </div>
+            }
+            else
+            {
+                <p class="product-price mb-2">@priceFormat ₫</p>
+            }
+
+            <div class="mt-auto d-grid gap-2">
+                <a asp-action="ProductDetail"
+                   asp-controller="Home"
+                   asp-route-id="@Model.product_id"
+                   class="btn btn-outline-primary-custom">
+                    Chi tiết
+                </a>
+                <!-- Nút giỏ hàng -->
+                <form asp-controller="Cart" asp-action="AddToCart" method="post" class="mt-auto">
+                    <input type="hidden" name="productId" value="@Model.product_id" />
+                    <button type="submit" class="btn btn-brown w-100">
+                        <i class="fas fa-cart-plus me-1"></i> Thêm vào giỏ
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

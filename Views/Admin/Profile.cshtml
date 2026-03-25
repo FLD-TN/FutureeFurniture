@@ -1,0 +1,80 @@
+﻿@model MTKPM_FE.Models.Admin
+@{
+    ViewData["Title"] = "My Profile";
+}
+
+<div class="container-fluid px-4">
+    <h2 class="mt-4 text-center text-uppercase" style="letter-spacing:4px">My Profile</h2>
+</div>
+<div class="row">
+    <div class="col-md-2"></div>
+    <div class="col-md-8">
+
+        @* Form cập nhật thông tin cơ bản *@
+        <form method="post" asp-action="Profile">
+            @* Ẩn field ID để controller nhận biết bản ghi *@
+            <input type="hidden" name="admin_id" value="@Model.admin_id" />
+
+            <div class="mb-3">
+                <label for="adminName" class="form-label">Name</label>
+                <input type="text"
+                       id="adminName"
+                       name="admin_name"
+                       class="form-control"
+                       placeholder="Enter Your Name"
+                       value="@Model.admin_name" />
+            </div>
+
+            <div class="mb-3">
+                <label for="adminEmail" class="form-label">Email</label>
+                <input type="email"
+                       id="adminEmail"
+                       name="admin_email"
+                       class="form-control"
+                       placeholder="Enter Your Email"
+                       value="@Model.admin_email" />
+            </div>
+
+            <div class="mb-3">
+                <label for="adminPassword" class="form-label">Password</label>
+                <input type="password"
+                       id="adminPassword"
+                       name="admin_password"
+                       class="form-control"
+                       placeholder="Enter Your Password"
+                       value="@Model.admin_password" />
+            </div>
+
+            @* Giữ lại tên file ảnh hiện tại để nếu không thay đổi thì vẫn dùng *@
+            <input type="hidden" name="admin_image" value="@Model.admin_image" />
+
+            <button type="submit" class="btn btn-primary w-100">Update Profile</button>
+        </form>
+
+        <hr class="my-4" />
+
+        @* Form thay đổi ảnh đại diện *@
+        <form method="post" asp-action="ChangeProfileImage" enctype="multipart/form-data">
+            <input type="hidden" name="admin_id" value="@Model.admin_id" />
+
+            <div class="mb-3">
+                <label for="profileImage" class="form-label">Change Profile Image</label>
+                <input type="file"
+                       id="profileImage"
+                       name="admin_image"
+                       class="form-control" />
+            </div>
+
+            <div class="text-center mb-3">
+                <img src="~/admin_image/@Model.admin_image"
+                     alt="Current Profile"
+                     class="rounded shadow"
+                     style="width:250px; height:250px; object-fit:cover;" />
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">Change Profile Image</button>
+        </form>
+
+    </div>
+    <div class="col-md-2"></div>
+</div>

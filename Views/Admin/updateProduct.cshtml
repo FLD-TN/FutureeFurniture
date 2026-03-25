@@ -1,0 +1,64 @@
+﻿@model Product
+@{
+    var categories = (List<Category>)ViewData["category"];
+    var selectedId = ViewBag.selectedCategoryId;
+}
+
+<form method="post" enctype="multipart/form-data">
+    <input type="hidden" name="product_id" value="@Model.product_id" />
+    <input type="text" name="product_name" placeholder="Enter Product Name" class="form-control my-2" value="@Model.product_name" />
+    <input type="text" name="product_price" placeholder="Enter Product Price" class="form-control my-2" value="@Model.product_price" />
+    <input type="text" name="product_discount_price" placeholder="Discount Price" class="form-control my-2" value="@Model.product_discount_price" />
+    <input type="text" name="product_rating" placeholder="Rating (0-5)" class="form-control my-2" value="@Model.product_rating" />
+    <input type="text" name="product_review_count" placeholder="Review Count" class="form-control my-2" value="@Model.product_review_count" />
+    <input type="text" name="product_sold" placeholder="Sold Quantity" class="form-control my-2" value="@Model.product_sold" />
+    <input type="text" name="product_description" placeholder="Enter Product Description" class="form-control my-2" value="@Model.product_description" />
+
+    <select name="cat_id" class="form-control my-2">
+        @foreach (var cat in categories)
+        {
+            <option value="@cat.category_id" selected="@(selectedId != null && cat.category_id == (int)selectedId)">
+                @cat.category_name
+            </option>
+        }
+    </select>
+
+    <!-- Hiển thị ảnh phụ hiện có -->
+    @if (Model.ProductImages != null && Model.ProductImages.Any())
+    {
+        <div class="mb-3">
+            <label class="fw-bold mb-2">Ảnh phụ hiện tại:</label>
+            <div class="row g-2">
+                @foreach (var img in Model.ProductImages)
+                {
+                    <div class="col-4 col-md-2 text-center">
+                        <img src="~/product_images/@img.ImagePath" class="img-thumbnail mb-1" style="height:70px;object-fit:cover;" />
+                        <form method="post" asp-action="DeleteProductImage" style="display:inline;">
+                            <input type="hidden" name="imageId" value="@img.Id" />
+                            <input type="hidden" name="productId" value="@Model.product_id" />
+                            <button type="submit" class="btn btn-sm btn-danger mt-1">Xóa</button>
+                        </form>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+
+    <!-- Upload thêm ảnh phụ -->
+    <div class="mb-3">
+        <label class="fw-bold mb-2">Thêm ảnh phụ:</label>
+        <input type="file" name="product_images" multiple class="form-control my-2" />
+        <small class="text-muted">Chọn nhiều ảnh để thêm cùng lúc</small>
+    </div>
+
+    <input type="submit" value="Update Product" class="form-control my-3 btn btn-primary" />
+</form>
+
+<form method="post" asp-action="ChangeProductImage" enctype="multipart/form-data">
+    <input type="hidden" name="product_id" value="@Model.product_id" />
+    <div class="text-center">
+        <img src="@("~/product_images/" + Model.product_image)" asp-append-version="true" style="width:250px; height:250px" class="rounded shadow my-3" /><br>
+        <input type="file" name="product_image" />
+        <input type="submit" value="Change Product Image" class="form-control my-3 btn btn-primary" />
+    </div>
+</form>

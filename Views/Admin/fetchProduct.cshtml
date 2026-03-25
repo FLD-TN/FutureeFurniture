@@ -1,0 +1,87 @@
+﻿@model List<Product>
+<div class="container-fluid px-4">
+    <h2 class="mt-4 text-center text-uppercase" style="letter-spacing:4px">All Product</h2>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <form method="get" class="row g-2 mb-3">
+            <div class="col-md-3">
+                    <input type="text" name="searchTerm" class="form-control" placeholder="Tìm kiếm tên, mô tả..." value="@(ViewContext.HttpContext.Request.Query["searchTerm"].ToString())" />
+                </div>
+            <div class="col-md-3">
+                <select name="categoryId" class="form-select">
+                    <option value="">Tất cả danh mục</option>
+                    @foreach(var c in ViewBag.Categories as List<MTKPM_FE.Models.Category>)
+                    {
+                        <option value="@c.category_id" selected="@(ViewContext.HttpContext.Request.Query["categoryId"] == c.category_id.ToString())">@c.category_name</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-2">
+                <input type="number" step="0.01" name="minPrice" class="form-control" placeholder="Giá từ" value="@(ViewContext.HttpContext.Request.Query["minPrice"].ToString())" />
+            </div>
+            <div class="col-md-2">
+                <input type="number" step="0.01" name="maxPrice" class="form-control" placeholder="Giá đến" value="@(ViewContext.HttpContext.Request.Query["maxPrice"].ToString())" />
+            </div>
+            <div class="col-md-2">
+                <select name="sortBy" class="form-select">
+                    <option value="">Sắp xếp</option>
+                    <option value="price_asc" selected="@(ViewContext.HttpContext.Request.Query["sortBy"] == "price_asc")">Giá tăng dần</option>
+                    <option value="price_desc" selected="@(ViewContext.HttpContext.Request.Query["sortBy"] == "price_desc")">Giá giảm dần</option>
+                    <option value="name" selected="@(ViewContext.HttpContext.Request.Query["sortBy"] == "name")">Tên</option>
+                    <option value="sold" selected="@(ViewContext.HttpContext.Request.Query["sortBy"] == "sold")">Bán chạy</option>
+                </select>
+            </div>
+            <div class="col-md-12 mt-2">
+                <button class="btn btn-primary">Tìm</button>
+            </div>
+        </form>
+        <a href="@Url.Action("addProduct","Admin")" class="btn btn-primary">Add New Product</a>
+        <table class="table table-bordered table-striped text-center mt-3">
+            <thead>
+                <tr>
+                    <th>Product Name</th>
+                    <th>Product Price</th>
+                    <th>Product Image</th>
+                    <th>Options</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var prod in Model)
+                {
+                    <tr>
+                        <td>@prod.product_name</td>
+                        <td>@prod.product_price</td>
+                        <td>
+                            <img src="~/product_images/@prod.product_image"
+                                 asp-append-version="true"
+                                 height="40"
+                                 width="40" />
+                        </td>
+                        <td>
+                            <a asp-controller="Admin"
+                               asp-action="ProductDetails"
+                               asp-route-id="@prod.product_id"
+                               class="btn btn-primary">
+                                Details
+                            </a>
+                            <a asp-controller="Admin"
+                               asp-action="UpdateProduct"
+                               asp-route-id="@prod.product_id"
+                               class="btn btn-warning">
+                                Update
+                            </a>
+                            <a asp-controller="Admin"
+                               asp-action="DeletePermissionProduct"
+                               asp-route-id="@prod.product_id"
+                               class="btn btn-danger">
+                                Delete
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+

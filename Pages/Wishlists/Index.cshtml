@@ -1,0 +1,59 @@
+﻿@page
+@model MTKPM_FE.Pages.Wishlists.IndexModel
+@using MTKPM_FE.Models  @* <-- thêm vào đây *@
+@{
+    ViewData["Title"] = "Quản lý Wishlist";
+}
+
+<h1>Quản lý Wishlist</h1>
+
+<form method="post" asp-page-handler="Create" class="mb-4 d-flex">
+    <input type="text"
+           class="form-control me-2"
+           placeholder="Tên wishlist mới..."
+           asp-for="NewName" />
+    <button type="submit" class="btn btn-primary">Tạo</button>
+</form>
+
+@if (!Model.WishLists.Any())
+{
+    <div class="alert alert-info">Bạn chưa có Wishlist nào.</div>
+}
+else
+{
+    @foreach (var w in Model.WishLists)
+    {
+        <div class="card mb-3">
+            <div class="card-header d-flex justify-content-between">
+                <span>
+                    <strong>@w.Name</strong>
+                    <small class="text-muted ms-2">(@w.CreatedAt:dd/MM/yyyy HH:mm)</small>
+                </span>
+            </div>
+            <div class="card-body">
+                @if (!w.Items.Any())
+                {
+                    <p class="text-muted">Chưa có sản phẩm nào trong wishlist này.</p>
+                }
+                else
+                {
+                    <ul class="list-unstyled">
+                        @foreach (var item in w.Items)
+                        {
+                            <li class="d-flex align-items-center mb-2">
+                                <img src="~/product_images/@item.Product.product_image"
+                                     class="me-2"
+                                     style="width:48px;height:48px;object-fit:cover;border-radius:4px;" />
+                                <span class="flex-grow-1">@item.Product.product_name</span>
+                                <form method="post" asp-page-handler="Remove" class="ms-2">
+                                    <input type="hidden" name="itemId" value="@item.WishListItemId" />
+                                    <button class="btn btn-sm btn-outline-danger">Xóa</button>
+                                </form>
+                            </li>
+                        }
+                    </ul>
+                }
+            </div>
+        </div>
+    }
+}

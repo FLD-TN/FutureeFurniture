@@ -1,0 +1,111 @@
+@model MTKPM_FE.Models.Customer
+@{
+    ViewBag.Title = "Chỉnh sửa hồ sơ";
+}
+
+<div class="container py-5" style="max-width: 720px;">
+    <div class="card shadow-sm border-0 rounded-4">
+        <div class="card-body p-4 p-md-5">
+
+            <h3 class="text-center mb-4 fw-bold text-primary">Chỉnh sửa thông tin cá nhân</h3>
+
+            @if (ViewBag.Error != null)
+            {
+                <div class="alert alert-danger">@ViewBag.Error</div>
+            }
+            @if (ViewBag.Success != null)
+            {
+                <div class="alert alert-success">@ViewBag.Success</div>
+            }
+
+            <form asp-action="EditProfile" method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Tên người dùng</label>
+                    <input asp-for="customer_name" class="form-control form-control-lg" placeholder="Nhập tên người dùng" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Email</label>
+                    <input asp-for="customer_email" class="form-control form-control-lg" placeholder="Nhập email" type="email" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Số điện thoại</label>
+                    <input asp-for="customer_phone" class="form-control form-control-lg" placeholder="Nhập số điện thoại" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Giới tính</label>
+                    <select asp-for="customer_gender" class="form-select form-select-lg">
+                        <option value="">-- Chọn giới tính --</option>
+                        <option value="Nam">Nam</option>
+                        <option value="Nữ">Nữ</option>
+                        <option value="Khác">Khác</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Quốc gia</label>
+                    <input asp-for="customer_country" class="form-control form-control-lg" placeholder="Nhập quốc gia" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Thành phố</label>
+                    <input asp-for="customer_city" class="form-control form-control-lg" placeholder="Nhập thành phố" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Địa chỉ</label>
+                    <textarea asp-for="customer_address" class="form-control form-control-lg" rows="2" placeholder="Nhập địa chỉ"></textarea>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label fw-semibold">Ảnh đại diện</label><br />
+                    <div class="d-flex align-items-center gap-3">
+                        @if (!string.IsNullOrEmpty(Model.customer_image))
+                        {
+                            <img src="~/customer_images/@Model.customer_image" alt="Ảnh đại diện"
+                                 width="80"
+                                 height="80"
+                                 class="rounded-circle border shadow-sm" />
+
+                        }
+                        <input type="file" name="customer_image_file" class="form-control" accept="image/*" />
+                    </div>
+                </div>
+
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <i class="fas fa-save me-2"></i> Lưu thay đổi
+                    </button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+<style>
+    body {
+        background-color: #faf9f6;
+        font-family: "Poppins", sans-serif;
+    }
+
+    .card {
+        background-color: #fffdfb;
+    }
+
+    label.form-label {
+        color: #444;
+    }
+
+    .btn-primary {
+        background-color: #8B6F5A;
+        border-color: #8B6F5A;
+    }
+
+        .btn-primary:hover {
+            background-color: #6B5544;
+            border-color: #6B5544;
+        }
+</style>

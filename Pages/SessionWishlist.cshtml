@@ -1,0 +1,125 @@
+﻿@page
+@model MTKPM_FE.Pages.SessionWishlistModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    ViewData["Title"] = "Wishlist của bạn";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+  .wishlist-container { padding: 3rem 0; }
+  .card.wishlist-card { border: none; border-radius: .75rem; box-shadow: 0 2px 6px rgba(0,0,0,0.05); transition: transform .2s ease, box-shadow .2s ease; }
+  .card.wishlist-card:hover { transform: translateY(-6px); box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
+  .card-img-top { width:100%; height:180px; object-fit:contain; object-position:center; }
+  .price-current { color:#d32f2f; font-weight:600; }
+  .price-original { text-decoration:line-through; color:#888; margin-left:.5rem; }
+  .badge-discount { background:#d32f2f; color:#fff; font-size:.85rem; padding:.2rem .5rem; border-radius:.25rem; }
+  .rating i { color:#fbc02d; }
+  .sold-count { font-size:.85rem; color:#555; }
+  .btn-group-wishlist .btn { border-radius:0; flex:1; }
+  .wishlist-actions .btn { min-width:140px; }
+</style>
+
+<div class="container wishlist-container">
+  <h2 class="text-center mb-5">@ViewData["Title"]</h2>
+
+  @if (!Model.Products.Any())
+  {
+      <div class="alert alert-secondary text-center">
+          Bạn chưa có sản phẩm yêu thích nào.
+      </div>
+  }
+  else
+  {
+      <div class="row g-4">
+        @foreach (var it in Model.Products)
+        {
+            // KHAI BÁO BIẾN NGAY TRONG FOREACH
+            var rating       = it.product_rating;
+            var reviewCount  = it.product_review_count;
+            var soldCount    = it.product_sold;
+            var price        = it.product_price;
+            // Thay 'product_price_original' bằng đúng tên property trong model của bạn
+            var originalPrice = it.product_sold; 
+            bool isDiscounted = originalPrice > price;
+            string priceFmt  = price.ToString("N0");
+            string origFmt   = originalPrice.ToString("N0");
+            int discountPct  = isDiscounted 
+                               ? (int)Math.Round((originalPrice - price) / (double)originalPrice * 100) 
+                               : 0;
+
+            <div class="col-12 col-sm-6 col-md-3 mb-4">
+              <div class="card wishlist-card h-100">
+                <a asp-controller="Home"
+                   asp-action="ProductDetail"
+                   asp-route-id="@it.product_id"
+                   class="text-decoration-none">
+                  <img src="~/product_images/@it.product_image"
+                       class="card-img-top"
+                       alt="@it.product_name" />
+                </a>
+                <div class="card-body d-flex flex-column">
+                  <div class="d-flex justify-content-between small text-muted mb-1">
+                    <span class="rating">
+                      <i class="fas fa-star"></i> @rating <small>(@reviewCount)</small>
+                    </span>
+                    <span class="sold-count">Đã bán: @soldCount</span>
+                  </div>
+                  <h6 class="card-title fw-bold text-truncate mb-2" title="@it.product_name">
+                    @it.product_name
+                  </h6>
+                  @if (isDiscounted)
+                  {
+                      <div class="mb-2">
+                        <span class="price-current">@priceFmt đ</span>
+                        <span class="price-original">@origFmt đ</span>
+                        <span class="badge-discount ms-2">-@discountPct%</span>
+                      </div>
+                  }
+                  else
+                  {
+                      <p class="price-current mb-2">@priceFmt đ</p>
+                  }
+                  <div class="mt-auto d-grid gap-2 btn-group-wishlist">
+                    <form method="post"
+                          asp-page="SessionWishlist"
+                          asp-page-handler="Remove"
+                          asp-route-id="@it.product_id"
+                          class="d-flex">
+                      @Html.AntiForgeryToken()
+                      <button type="submit" class="btn btn-danger btn-sm w-100">
+                        Xóa
+                      </button>
+                    </form>
+                    <a asp-controller="Home"
+                       asp-action="ProductDetail"
+                       asp-route-id="@it.product_id"
+                       class="btn btn-outline-success btn-sm w-100">
+                      Chi tiết
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+        }
+      </div>
+
+      <div class="d-flex justify-content-center wishlist-actions gap-3 mt-5">
+        <form method="post"
+              asp-page="SessionWishlist"
+              asp-page-handler="ClearAll">
+          @Html.AntiForgeryToken()
+          <button type="submit" class="btn btn-warning">Xóa tất cả</button>
+        </form>
+      </div>
+  }
+
+  <!-- NÚT QUAY VỀ LUÔN HIỂN THỊ -->
+  <div class="text-center mt-4">
+    <a asp-controller="Home"
+       asp-action="Index"
+       class="btn btn-secondary">
+      ← Quay về trang chủ
+    </a>
+  </div>
+</div>

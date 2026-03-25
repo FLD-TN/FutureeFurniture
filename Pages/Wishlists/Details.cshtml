@@ -1,0 +1,41 @@
+﻿@page "{id:int}"
+@model MTKPM_FE.Pages.Wishlists.DetailsModel
+@{
+    ViewData["Title"] = Model.WishList.Name;
+}
+
+<h2>Wishlist: @Model.WishList.Name</h2>
+
+<h4>Sản phẩm</h4>
+<table class="table">
+    <thead><tr><th>Tên</th><th></th></tr></thead>
+    <tbody>
+        @foreach (var it in Model.WishList.Items)
+        {
+            <tr>
+                <td>@it.Product.product_name</td>
+                <td>
+                    <form method="post" asp-page-handler="Remove">
+                        <input type="hidden" name="itemId" value="@it.WishListItemId" />
+                        <button class="btn btn-sm btn-danger">Xóa</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<h4>Thêm sản phẩm</h4>
+<form method="post" asp-page-handler="Add" class="row g-2">
+    <div class="col-auto">
+        <select name="productId" class="form-select">
+            @foreach (var p in Model.AvailableProducts)
+            {
+                <option value="@p.product_id">@p.product_name</option>
+            }
+        </select>
+    </div>
+    <div class="col-auto">
+        <button class="btn btn-primary">Thêm</button>
+    </div>
+</form>

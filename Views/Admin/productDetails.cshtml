@@ -1,0 +1,27 @@
+﻿@model Product
+
+<div class="container-fluid px-4">
+    <h2 class="mt-4 text-center text-uppercase" style="letter-spacing:4px">Product Details</h2>
+</div>
+
+<div class="row">
+    <div class="col-md-2"></div>
+    <div class="col-md-8">
+        <div class="text-center my-3">
+            <img src="@("~/product_images/" + Model.product_image)" asp-append-version="true"
+                 width="250px" height="250px" class="mb-3 rounded shadow" />
+        </div>
+        <ul class="list-group">
+            <li class="list-group-item">Product Id: @Model.product_id</li>
+            <li class="list-group-item">Product Name: @Model.product_name</li>
+            <li class="list-group-item">Product Price: @Model.product_price.ToString("N0")</li>
+            <li class="list-group-item">Discount Price: @(Model.product_discount_price?.ToString("N0") ?? "N/A")</li>
+            <li class="list-group-item">Rating: @Model.product_rating</li>
+            <li class="list-group-item">Review Count: @Model.product_review_count</li>
+            <li class="list-group-item">Sold Quantity: @Model.product_sold</li>
+            <li class="list-group-item">Product Description: @Model.product_description</li>
+            <li class="list-group-item">Category: @Model.Category.category_name</li>
+        </ul>
+    </div>
+    <div class="col-md-2"></div>
+</div>

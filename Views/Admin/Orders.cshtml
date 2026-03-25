@@ -1,0 +1,72 @@
+﻿@model List<MTKPM_FE.Models.Order>
+@{
+    ViewData["Title"] = "Quản lý đơn hàng";
+}
+
+<div class="container py-5">
+    <h2 class="mb-4">Danh sách đơn hàng</h2>
+    <form method="get" class="row g-2 mb-3">
+        <div class="col-md-3">
+            <input type="text" name="searchTerm" class="form-control" placeholder="Tìm theo ID hoặc tên khách" value="@(ViewContext.HttpContext.Request.Query["searchTerm"].ToString())" />
+        </div>
+        <div class="col-md-2">
+            <input type="date" name="fromDate" class="form-control" value="@(ViewContext.HttpContext.Request.Query["fromDate"].ToString())" />
+        </div>
+        <div class="col-md-2">
+            <input type="date" name="toDate" class="form-control" value="@(ViewContext.HttpContext.Request.Query["toDate"].ToString())" />
+        </div>
+        <div class="col-md-2">
+            <input type="number" step="0.01" name="minTotal" class="form-control" placeholder="Tổng từ" value="@(ViewContext.HttpContext.Request.Query["minTotal"].ToString())" />
+        </div>
+        <div class="col-md-2">
+            <input type="number" step="0.01" name="maxTotal" class="form-control" placeholder="Tổng đến" value="@(ViewContext.HttpContext.Request.Query["maxTotal"].ToString())" />
+        </div>
+        <div class="col-md-1">
+            <button class="btn btn-primary w-100">Tìm</button>
+        </div>
+    </form>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">Chưa có đơn hàng nào.</div>
+    }
+    else
+    {
+        <table class="table table-hover align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Khách</th>
+                    <th scope="col">Ngày tạo</th>
+                    <th scope="col">Tổng tiền</th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var o in Model)
+                {
+                    <tr>
+                        <td>@o.OrderID</td>
+                        <td>@o.Customer.customer_name</td>
+                        <td>
+                            @* dd/MM/yyyy HH:mm:ss *@
+                            @o.CreatedAt.ToString("dd/MM/yyyy HH:mm:ss")
+                        </td>
+                        <td>
+                            @* Số nguyên không phần thập phân, thêm dấu ₫ *@
+                            @o.TotalAmount.ToString("N0") ₫
+                        </td>
+                        <td class="text-end">
+                            <a asp-controller="Admin"
+                               asp-action="OrderDetails"
+                               asp-route-id="@o.OrderID"
+                               class="btn btn-sm btn-primary">
+                                Xem
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>

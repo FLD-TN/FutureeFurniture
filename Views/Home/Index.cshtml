@@ -1,0 +1,75 @@
+﻿@model List<MTKPM_FE.Models.Product>
+@{
+    Layout = "_Layout";
+}
+
+<!-- ===== HERO SECTION ===== -->
+<section class="position-relative animate-fade-in" style="min-height:87vh; background:url('/images/banner.jpg') center/cover no-repeat;">
+    <div class="position-absolute top-0 start-0 w-100 h-100" style="background:rgba(75,59,42,.45);"></div>
+    <div class="container position-relative d-flex flex-column justify-content-center align-items-center text-center" style="min-height:82vh; z-index:1;">
+        <h1 class="display-4 fw-bold text-white" style="text-shadow:0 6px 24px rgba(0,0,0,.25);">Không gian sống đẳng cấp</h1>
+        <p class="lead text-white-50 mb-4">Biến ngôi nhà thành tổ ấm của bạn</p>
+        <a asp-controller="Home" asp-action="AllProducts" class="btn btn-brown btn-lg px-5 py-3">
+            Khám phá ngay
+        </a>
+    </div>
+</section>
+
+<!-- ===== SẢN PHẨM MỚI ===== -->
+<section class="mt-5 py-5" id="SanPhamMoiSection">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-5">
+            <div>
+                <h2 class="section-title">Sản phẩm mới</h2>
+                <p class="section-subtitle">Những sản phẩm mới nhất từ Nội Thất Xinh</p>
+            </div>
+            <a asp-controller="Home" asp-action="AllProducts" asp-route-categorySlug="sanphammoi"
+               class="btn btn-outline-primary-custom">
+                Xem thêm <i class="fas fa-chevron-right ms-2"></i>
+            </a>
+        </div>
+        <div class="row g-4">
+            @if (Model != null && Model.Any())
+            {
+                @foreach (var product in Model.Take(8))
+                {
+                    <partial name="_ProductCard" model="product" />
+                }
+            }
+            else
+            {
+                <div class="text-center text-muted py-5">Chưa có sản phẩm nào.</div>
+            }
+        </div>
+    </div>
+</section>
+<!-- ===== TIN TỨC BLOG ===== -->
+@{
+    var newsList = ViewBag.News as List<MTKPM_FE.Models.Blog>;
+}
+<section class="mt-5 pb-5">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-5">
+            <div>
+                <h2 class="section-title">Tin tức & Blog</h2>
+                <p class="section-subtitle">Cập nhật xu hướng nội thất mới nhất</p>
+            </div>
+            <a href="/blog" class="btn btn-outline-primary-custom">
+                Xem thêm <i class="fas fa-chevron-right ms-2"></i>
+            </a>
+        </div>
+        <div class="row g-4">
+            @if (newsList != null && newsList.Any())
+            {
+                foreach (var blog in newsList.Take(4))
+                {
+                    <partial name="_BlogCard" model="blog" />
+                }
+            }
+            else
+            {
+                <div class="text-center text-muted py-5">Chưa có bài viết nào.</div>
+            }
+        </div>
+    </div>
+</section>

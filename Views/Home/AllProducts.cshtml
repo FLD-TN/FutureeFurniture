@@ -1,0 +1,145 @@
+﻿@model MTKPM_FE.Helpers.PaginatedList<MTKPM_FE.Models.Product>
+
+@{
+    ViewData["Title"] = "Tất cả sản phẩm";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Breadcrumb -->
+<div style="background: #F8F6F3;">
+    <div class="container py-2">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0" style="background: transparent;">
+                <li class="breadcrumb-item">
+                    <a asp-controller="Home" asp-action="Index"
+                       class="fw-semibold text-decoration-none" style="color: #8B6F5A;">
+                        Trang chủ
+                    </a>
+                </li>
+                <li class="breadcrumb-item active fw-semibold"
+                    aria-current="page" style="color: #8B6F5A;">
+                    Tất cả sản phẩm
+                </li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<style>
+    /* Tùy chỉnh màu sắc cho các nút phân trang */
+    .pagination .page-link {
+        color: #8B6F5A; /* Màu nâu chủ đạo của trang */
+        background-color: transparent;
+        border-color: #dee2e6;
+    }
+
+    .pagination .page-link:hover {
+        color: #5a4a3a; /* Màu nâu đậm hơn khi hover */
+        background-color: #e9ecef; /* Màu nền xám nhạt khi hover */
+    }
+
+    /* Tùy chỉnh màu cho nút active (trang hiện tại) */
+    .pagination .page-item.active .page-link {
+        background-color: #212529; /* Màu đen giống nút filter active */
+        border-color: #212529;
+        color: #fff;
+        z-index: 2; /* Đảm bảo nút active nổi lên trên */
+    }
+</style>
+
+<div class="container my-5">
+    <h2 class="section-title mb-5">@ViewData["Title"]</h2>
+
+    <div class="row mb-4">
+        <!-- Category Filter -->
+        <div class="col-md-8">
+            <ul class="list-inline">
+                @{
+                    // Nút "Tất cả" chỉ active khi không có categoryId và không có slug nào được chọn
+                    var allActiveClass = (ViewBag.CurrentCategory == null && ViewBag.CurrentSlug == null) ? "btn-dark" : "btn-outline-dark";
+                }
+                <li class="list-inline-item me-2 mb-2">
+                    <a asp-action="AllProducts" asp-all-route-data="null" asp-route-page="1" class="btn @allActiveClass">
+                        Tất cả
+                    </a>
+                </li>
+                <li class="list-inline-item me-2 mb-2">
+                    <a asp-action="AllProducts" asp-route-categorySlug="sanphammoi" asp-route-page="1"
+                       class="btn @(ViewBag.CurrentSort == "newest" ? "btn-dark" : "btn-outline-dark")">
+                        Sản phẩm mới
+                    </a>
+                </li>
+                @foreach (var category in ViewBag.Categories)
+                {
+                    <li class="list-inline-item me-2 mb-2">
+                        <a asp-action="AllProducts" asp-route-categoryId="@category.category_id" asp-route-page="1"
+                           class="btn @(ViewBag.CurrentCategory == category.category_id ? "btn-dark" : "btn-outline-dark")">
+                            @category.category_name
+                        </a>
+                    </li>
+                }
+            </ul>
+        </div>
+        <!-- Sort Order Dropdown -->
+        <div class="col-md-4 d-flex justify-content-md-end">
+            <div class="dropdown">
+                <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="sortDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    Sắp xếp theo
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="sortDropdown">
+                    <li><a class="dropdown-item @(ViewBag.CurrentSort == null ? "active" : "")" asp-action="AllProducts" asp-route-categoryId="@ViewBag.CurrentCategory" asp-route-categorySlug="@ViewBag.CurrentSlug">Mặc định</a></li>
+                    <li><a class="dropdown-item @(ViewBag.CurrentSort == "rating_desc" ? "active" : "")" asp-action="AllProducts" asp-route-categoryId="@ViewBag.CurrentCategory" asp-route-categorySlug="@ViewBag.CurrentSlug" asp-route-sortOrder="rating_desc">Đánh giá cao</a></li>
+                    <li><a class="dropdown-item @(ViewBag.CurrentSort == "price_asc" ? "active" : "")" asp-action="AllProducts" asp-route-categoryId="@ViewBag.CurrentCategory" asp-route-categorySlug="@ViewBag.CurrentSlug" asp-route-sortOrder="price_asc">Giá: Tăng dần</a></li>
+                    <li><a class="dropdown-item @(ViewBag.CurrentSort == "price_desc" ? "active" : "")" asp-action="AllProducts" asp-route-categoryId="@ViewBag.CurrentCategory" asp-route-categorySlug="@ViewBag.CurrentSlug" asp-route-sortOrder="price_desc">Giá: Giảm dần</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    @if (Model.Any())
+    {
+        <div class="row g-4">
+            @foreach (var product in Model)
+            {
+                <partial name="_ProductCard" model="product" />
+            }
+        </div>
+
+        <!-- Pagination Controls -->
+        <nav aria-label="Page navigation" class="mt-5">
+            <ul class="pagination justify-content-center">
+                @{
+                    // Nút Trang trước
+                    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+                    <li class="page-item @prevDisabled">
+                        <a class="page-link" asp-action="AllProducts" asp-route-categoryId="@ViewBag.CurrentCategory" asp-route-categorySlug="@ViewBag.CurrentSlug" asp-route-sortOrder="@ViewBag.CurrentSort" asp-route-page="@(Model.PageIndex - 1)">
+                            &laquo;
+                        </a>
+                    </li>
+
+                    // Hiển thị các nút số trang
+                    for (int i = 1; i <= Model.TotalPages; i++)
+                    {
+                        <li class="page-item @(i == Model.PageIndex ? "active" : "")">
+                            <a class="page-link" asp-action="AllProducts" asp-route-categoryId="@ViewBag.CurrentCategory" asp-route-categorySlug="@ViewBag.CurrentSlug" asp-route-sortOrder="@ViewBag.CurrentSort" asp-route-page="@i">@i</a>
+                        </li>
+                    }
+
+                    // Nút Trang sau
+                    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+                    <li class="page-item @nextDisabled">
+                        <a class="page-link" asp-action="AllProducts" asp-route-categoryId="@ViewBag.CurrentCategory" asp-route-categorySlug="@ViewBag.CurrentSlug" asp-route-sortOrder="@ViewBag.CurrentSort" asp-route-page="@(Model.PageIndex + 1)">
+                            &raquo;
+                        </a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    }
+    else
+    {
+        <div class="alert alert-secondary text-center">
+            Không tìm thấy sản phẩm nào.
+        </div>
+    }
+</div>

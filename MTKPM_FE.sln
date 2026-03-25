@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36203.30
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MTKPM_FE", "MTKPM_FE.csproj", "{9AA78C66-C022-4823-8D5F-ED1A18A950CA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9AA78C66-C022-4823-8D5F-ED1A18A950CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9AA78C66-C022-4823-8D5F-ED1A18A950CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9AA78C66-C022-4823-8D5F-ED1A18A950CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9AA78C66-C022-4823-8D5F-ED1A18A950CA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {DAC5D2C1-BCF0-4F47-9E26-BA76752A7A2D}
+	EndGlobalSection
+EndGlobal

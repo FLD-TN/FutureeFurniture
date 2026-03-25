@@ -1,0 +1,169 @@
+﻿@model MTKPM_FE.Models.Product
+@{
+    Layout = "_Layout";
+}
+<style>
+    body, html {
+        background: #F8F6F3 !important;
+    }
+
+    .product-container {
+        max-width: 1200px;
+        margin: 40px auto;
+    }
+
+    .bg-main-product {
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 3px 24px rgba(80,130,80,0.08);
+        padding: 32px;
+        margin-bottom: 24px;
+    }
+
+    .breadcrumb-product a {
+        color: #8B6F5A;
+        text-decoration: none;
+    }
+
+        .breadcrumb-product a:hover {
+            text-decoration: underline;
+        }
+
+    .product-info-right h1 {
+        color: #8B6F5A;
+        font-size: 1.5rem;
+        font-weight: 700;
+    }
+
+    .price-main {
+        color: #8B6F5A;
+        font-weight: 700;
+        font-size: 2rem;
+    }
+
+    .price-old {
+        color: #999;
+        text-decoration: line-through;
+        margin-left: 12px;
+    }
+
+    .btn-green {
+        background: #8B6F5A;
+        color: #fff;
+        border: none;
+        padding: 12px;
+        border-radius: 10px;
+        width: 100%;
+    }
+
+        .btn-green:hover {
+            background: #6B5544;
+        }
+
+    .product-desc {
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 2px 12px rgba(80,130,80,0.09);
+        padding: 24px;
+        margin-bottom: 24px;
+    }
+</style>
+
+<div class="product-container">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="breadcrumb-product mb-3">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Trang chủ</a></li>
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="AllProducts">Tất cả sản phẩm</a></li>
+            <li class="breadcrumb-item active" aria-current="page">@Model.product_name</li>
+        </ol>
+    </nav>
+
+    <!-- Main Product -->
+    <div class="row bg-main-product align-items-center">
+        <div class="col-md-5 text-center mb-3 mb-md-0">
+            <img src="~/product_images/@Model.product_image"
+                 alt="@Model.product_name"
+                 class="img-fluid"
+                 style="max-height:360px; object-fit:contain;" />
+        </div>
+        <div class="col-md-7 product-info-right">
+            <h1>@Model.product_name</h1>
+            <div class="mb-2">
+                <span class="price-main">
+                    @(
+                                        (Model.product_discount_price.HasValue
+                                        ? Model.product_discount_price.Value
+                                        : Model.product_price
+                                        )
+                                        .ToString("N0")
+                                        ) ₫
+                </span>
+                @if (Model.product_discount_price.HasValue)
+                {
+                    <span class="price-old">
+                        @Model.product_price.ToString("N0") ₫
+                    </span>
+                }
+            </div>
+            <div class="mb-2">
+                ⭐ @Model.product_rating.ToString("0.0")
+                <span class="text-muted">(@Model.product_review_count đánh giá)</span>
+            </div>
+            <div class="mb-3">
+                Đã bán:
+                <span class="fw-semibold">@Model.product_sold.ToString("N0")</span>
+            </div>
+            <form asp-controller="Cart" asp-action="AddToCart" method="post" class="mt-auto">
+                <input type="hidden" name="productId" value="@Model.product_id" />
+                <button type="submit" class="btn btn-outline-green w-100">
+                    <i class="fas fa-cart-plus me-1"></i> Thêm vào giỏ hàng
+                </button>
+            </form>
+            <form method="post" asp-controller="Wishlist" asp-action="AddToDefault" class="d-inline">
+                <input type="hidden" name="productId" value="@Model.product_id" />
+                <button type="submit" class="btn btn-outline-danger w-100">
+                    <i class="fas fa-heart"></i> Yêu thích
+                </button>
+            </form>
+
+        </div>
+    </div>
+
+
+    <!-- Description -->
+    <div class="product-desc">
+        <h5 class="fw-bold mb-3" style="color: #8B6F5A;">Mô tả sản phẩm</h5>
+        <div>@Html.Raw(Model.product_description)</div>
+    </div>
+
+    <!-- Suggested Products -->
+    @if (ViewBag.RecentlyViewedProducts is List<MTKPM_FE.Models.Product> rec && rec.Any())
+    {
+        <div class="mb-4">
+            <h5 class="fw-bold mb-3" style="color: #8B6F5A;">Sản phẩm gợi ý</h5>
+            <div class="d-flex overflow-auto">
+                @foreach (var p in rec)
+                {
+                    <div class="card me-3" style="min-width:200px;">
+                        <img src="~/product_images/@p.product_image"
+                             class="card-img-top"
+                             style="height:120px; object-fit:contain;"
+                             alt="@p.product_name" />
+                        <div class="card-body p-2">
+                            <h6 class="card-title text-truncate">@p.product_name</h6>
+                            <p class="mb-1 fw-bold" style="color: #8B6F5A;">
+                                @((p.product_discount_price ?? p.product_price).ToString("N0")) ₫
+                            </p>
+                            <a asp-action="ProductDetail"
+                               asp-route-id="@p.product_id"
+                               class="btn btn-sm w-100" style="border: 1.5px solid #8B6F5A; color: #8B6F5A; background: transparent;">
+                                Xem chi tiết
+                            </a>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+</div>

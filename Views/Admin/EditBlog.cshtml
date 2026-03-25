@@ -1,0 +1,53 @@
+@model MTKPM_FE.Models.Blog
+@{
+    ViewData["Title"] = "Chỉnh sửa bài viết";
+}
+
+<div class="container-fluid px-4">
+    <h2 class="mt-4">@ViewData["Title"]</h2>
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-edit me-1"></i>
+            Cập nhật thông tin bài viết
+        </div>
+        <div class="card-body">
+            <form asp-action="EditBlog" asp-route-id="@Model.blog_id" method="post" enctype="multipart/form-data">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="blog_id" />
+                <input type="hidden" asp-for="blog_image" /> <!-- Giữ lại ảnh cũ nếu không upload ảnh mới -->
+
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <div class="mb-3">
+                    <label asp-for="blog_title" class="form-label fw-bold">Tiêu đề</label>
+                    <input asp-for="blog_title" class="form-control" />
+                    <span asp-validation-for="blog_title" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="blog_description" class="form-label fw-bold">Nội dung</label>
+                    <textarea asp-for="blog_description" class="form-control" rows="10"></textarea>
+                    <span asp-validation-for="blog_description" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label for="photo" class="form-label fw-bold">Ảnh đại diện mới (tùy chọn)</label>
+                    <input type="file" name="photo" id="photo" class="form-control" />
+                    @if (!string.IsNullOrEmpty(Model.blog_image))
+                    {
+                        <div class="mt-2">
+                            <small>Ảnh hiện tại:</small>
+                            <img src="~/blog_images/@Model.blog_image" class="img-thumbnail mt-1" style="max-width: 150px;" />
+                        </div>
+                    }
+                </div>
+
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-save me-2"></i>Lưu thay đổi</button>
+                    <a asp-action="ManageBlogs" class="btn btn-secondary">Hủy</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

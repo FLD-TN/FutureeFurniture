@@ -1,0 +1,52 @@
+﻿@model MTKPM_FE.Models.Product
+
+<div class="container-fluid px-4">
+    <h2 class="mt-4 text-center text-uppercase text-danger" style="letter-spacing:4px">
+        Xác nhận xóa sản phẩm
+    </h2>
+
+    <div class="row justify-content-center mt-5">
+        <div class="col-md-6">
+            <div class="card border-danger shadow-sm">
+                <div class="bg-danger text-white">
+                    Thông tin sản phẩm
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <strong>ID:</strong> @Model.product_id
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Tên:</strong> @Model.product_name
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Giá:</strong> @Model.product_price.ToString("N0") đ
+                    </li>
+                    <li class="list-group-item text-center">
+                        <img asp-src="~/product_images/@Model.product_image"
+                             asp-append-version="true"
+                             alt="@Model.product_name"
+                             class="img-fluid"
+                             style="max-height:150px;" />
+                    </li>
+                </ul>
+                <div class="card-body text-center">
+                    <form asp-controller="Admin"
+                          asp-action="DeleteProduct"
+                          asp-route-id="@Model.product_id"
+                          method="post"
+                          class="d-inline">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-danger me-2">
+                            Xóa
+                        </button>
+                    </form>
+                    <a asp-controller="Admin"
+                       asp-action="FetchProduct"
+                       class="btn btn-secondary">
+                        Hủy
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,117 @@
+﻿@model MTKPM_FE.Models.InvoiceViewModel
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Hóa đơn thanh toán";
+}
+
+@section Styles {
+    <style>
+        .invoice-header {
+            background: #f8f9fa;
+            border-bottom: 2px solid #dee2e6;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border-radius: .375rem .375rem 0 0;
+        }
+
+            .invoice-header h2 {
+                margin: 0;
+                font-weight: 700;
+                color: #343a40;
+            }
+
+        .invoice-info dt {
+            font-weight: 600;
+        }
+
+        .invoice-info dd {
+            margin-bottom: .5rem;
+        }
+
+        .invoice-card {
+            border-radius: .375rem;
+            box-shadow: 0 0.5rem 1rem rgba(0,0,0,.05);
+        }
+
+        .table-invoice thead {
+            background-color: #e9ecef;
+        }
+
+        .table-invoice tfoot .fw-bold {
+            font-size: 1.25rem;
+        }
+    </style>
+}
+
+<div class="container py-5">
+    <div class="card invoice-card">
+        <div class="invoice-header">
+            <div class="d-flex justify-content-between align-items-center">
+                <h2>Hóa đơn #@Model.OrderID</h2>
+                <small class="text-muted">
+                    @Model.CreatedAt.ToString("dd/MM/yyyy HH:mm:ss")
+                </small>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <dl class="row invoice-info mb-4">
+                <dt class="col-sm-3">Trạng thái thanh toán:</dt>
+                <dd class="col-sm-9">
+                    <span class="badge bg-@(Model.PaymentStatus == "Paid" ? "success" : "warning")">
+                        @Model.PaymentStatus
+                    </span>
+                </dd>
+
+                <dt class="col-sm-3">Trạng thái đơn hàng:</dt>
+                <dd class="col-sm-9">
+                    <span class="badge bg-info">@Model.OrderStatus</span>
+                </dd>
+            </dl>
+
+            <div class="table-responsive">
+                <table class="table table-invoice table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th>Sản phẩm</th>
+                            <th class="text-center">Số lượng</th>
+                            <th class="text-end">Đơn giá</th>
+                            <th class="text-end">Thành tiền</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Items)
+                        {
+                            <tr>
+                                <td>@item.ProductName</td>
+                                <td class="text-center">@item.Quantity</td>
+                                <td class="text-end">@String.Format("{0:N0}", item.UnitPrice) ₫</td>
+                                <td class="text-end">@String.Format("{0:N0}", item.LineTotal) ₫</td>
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="3" class="text-end fw-bold">Tổng cộng:</td>
+                            <td class="text-end fw-bold text-danger">
+                                @String.Format("{0:N0}", Model.TotalAmount) ₫
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+
+        <div class="card-footer bg-white d-flex justify-content-end">
+            <a asp-controller="Orders" asp-action="Index" class="btn btn-outline-primary me-2">
+                <i class="fas fa-home me-1"></i> Hóa đơn
+            </a>
+            <a asp-controller="Home" asp-action="Index" class="btn btn-outline-primary me-2">
+                <i class="fas fa-home me-1"></i> Về trang chủ
+            </a>
+            <button onclick="window.print()" class="btn btn-primary">
+                <i class="fas fa-print me-1"></i> In hóa đơn
+            </button>
+        </div>
+    </div>
+</div>

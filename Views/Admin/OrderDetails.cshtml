@@ -1,0 +1,80 @@
+﻿@model MTKPM_FE.Models.Order
+@{
+    ViewData["Title"] = $"Đơn hàng #{Model.OrderID}";
+}
+
+<div class="container py-5">
+    <h2 class="mb-4">Chi tiết đơn #@Model.OrderID</h2>
+
+    <dl class="row mb-4">
+        <dt class="col-sm-3">Khách hàng:</dt>
+        <dd class="col-sm-9">@Model.Customer.customer_name</dd>
+
+        <dt class="col-sm-3">Ngày tạo:</dt>
+        <dd class="col-sm-9">@Model.CreatedAt.ToString("dd/MM/yyyy HH:mm")</dd>
+
+        <dt class="col-sm-3">Tình trạng thanh toán:</dt>
+        <dd class="col-sm-9">
+            <span class="badge bg-@(Model.PaymentStatus == "Paid" ? "success" : (Model.PaymentStatus == "Unpaid" ? "warning" : "secondary"))">
+                @Model.PaymentStatus
+            </span>
+        </dd>
+
+        <dt class="col-sm-3">Trạng thái đơn:</dt>
+        <dd class="col-sm-9">
+            <span class="badge bg-@(Model.OrderStatus == "Completed" ? "success" : (Model.OrderStatus == "Pending Confirmation" ? "info" : "secondary"))">
+                @Model.OrderStatus
+            </span>
+        </dd>
+    </dl>
+
+    <table class="table table-bordered">
+        <thead class="table-light">
+            <tr>
+                <th>Sản phẩm</th>
+                <th class="text-end">Giá</th>
+                <th class="text-center">Số lượng</th>
+                <th class="text-end">Thành tiền</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.OrderDetails)
+            {
+                <tr>
+                    <td>@item.Product.product_name</td>
+                    <td class="text-end">
+                        @item.Price.ToString("N0") ₫
+                    </td>
+                    <td class="text-center">@item.Quantity</td>
+                    <td class="text-end">
+                        @( (item.Price * item.Quantity).ToString("N0") ) ₫
+                    </td>
+                </tr>
+            }
+        </tbody>
+        <tfoot>
+            <tr>
+                <th colspan="3" class="text-end">Tổng cộng:</th>
+                <th class="text-end">@Model.TotalAmount.ToString("N0") ₫</th>
+            </tr>
+        </tfoot>
+    </table>
+
+    <div class="mt-4">
+        <div class="d-flex justify-content-between">
+            <a asp-action="Orders" asp-controller="Admin" class="btn btn-secondary">
+                ← Quay lại danh sách
+            </a>
+
+            @if (Model.OrderStatus == "Pending Confirmation")
+            {
+                <form asp-action="ConfirmOrder" asp-controller="Admin" method="post">
+                    <input type="hidden" name="orderId" value="@Model.OrderID" />
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-check-circle me-2"></i> Xác nhận đơn hàng thành công
+                    </button>
+                </form>
+            }
+        </div>
+    </div>
+</div>

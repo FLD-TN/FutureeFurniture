@@ -1,0 +1,67 @@
+@model MTKPM_FE.Models.Blog
+
+<style>
+    .blog-card-custom {
+        border: none;
+        border-radius: 12px;
+        overflow: hidden;
+        background: #fff;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.07);
+        transition: all 0.3s ease;
+        height: 100%;
+        display: flex;
+        position: relative; /* Thêm dòng này để giới hạn stretched-link */
+        flex-direction: column;
+    }
+
+    .blog-card-custom:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 25px rgba(0,0,0,0.1);
+    }
+
+    .blog-card-custom .blog-thumbnail-wrapper {
+        height: 200px;
+        overflow: hidden;
+    }
+
+    .blog-card-custom .blog-thumbnail {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .blog-card-custom .card-body {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .blog-card-custom .blog-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #333;
+        text-decoration: none;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        min-height: 2.4em; /* Đảm bảo chiều cao cho 2 dòng */
+    }
+
+    .blog-card-custom .blog-date {
+        font-size: 0.85rem;
+        color: #888;
+    }
+</style>
+
+<div class="col-md-6 col-lg-3 mb-4">
+    <div class="blog-card-custom">
+        <a href="/blog/@Model.slug" class="blog-thumbnail-wrapper">
+            <img src="~/blog_images/@Model.blog_image" class="blog-thumbnail" alt="@Model.blog_title">
+        </a>
+        <div class="card-body p-3">
+            <p class="blog-date mb-2"><i class="fas fa-calendar-alt me-1"></i> @Model.CreatedAt.ToString("dd/MM/yyyy")</p>
+            <a href="/blog/@Model.slug" class="blog-title stretched-link" title="@Model.blog_title">@Model.blog_title</a>
+        </div>
+    </div>
+</div>

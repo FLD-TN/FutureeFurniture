@@ -1,0 +1,49 @@
+﻿@model List<MTKPM_FE.Models.Order>
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Đơn hàng của tôi";
+}
+<div class="container py-5">
+    <h2>Đơn hàng đã đặt</h2>
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">Bạn chưa có đơn hàng nào.</div>
+    }
+    else
+    {
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Mã đơn</th>
+                    <th>Ngày</th>
+                    <th>Giá trị</th>
+                    <th>Thanh toán</th>
+                    <th>Trạng thái</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var o in Model)
+                {
+                    <tr>
+                        <td>@o.OrderID</td>
+                        <td>@o.CreatedAt.ToString("dd/MM/yyyy")</td>
+                        <td>@String.Format("{0:N0}", o.TotalAmount) ₫</td>
+                        <td>
+                            <span class="badge bg-@(o.PaymentStatus == "Paid" ? "success" : "warning")">
+                                @o.PaymentStatus
+                            </span>
+                        </td>
+                        <td>@o.OrderStatus</td>
+                        <td class="text-end">
+                            <a asp-controller="Payment"
+                               asp-action="Invoice"
+                               asp-route-id="@o.OrderID"
+                               class="btn btn-sm btn-outline-primary">Xem hóa đơn</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>

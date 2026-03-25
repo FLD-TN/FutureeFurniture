@@ -1,0 +1,31 @@
+﻿@{
+    ViewData["Title"] = "Kết quả Thanh toán";
+    bool success = ViewBag.Message?.ToString().Contains("thành công") == true;
+}
+<div class="container py-5">
+    <div class="alert @(success ? "alert-success" : "alert-danger") text-center">
+        <i class="fas @(success ? "fa-check-circle" : "fa-times-circle") fa-2x"></i>
+        <h3 class="mt-2">@ViewBag.Message</h3>
+    </div>
+    <div class="card">
+        <div class="card-header">Chi tiết giao dịch</div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table mb-0">
+                    <thead class="table-light"><tr><th>Key</th><th>Value</th></tr></thead>
+                    <tbody>
+                        @foreach (var kv in (Dictionary<string, string>)ViewBag.VnpData)
+                        {
+                            <tr><td>@kv.Key</td><td>@kv.Value</td></tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="text-center mt-4">
+        <a asp-controller="Home" asp-action="Index" class="btn btn-primary">
+            <i class="fas fa-home me-2"></i>Trang chủ
+        </a>
+    </div>
+</div>

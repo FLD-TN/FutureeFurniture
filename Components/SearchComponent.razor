@@ -1,0 +1,173 @@
+@using System.Net.Http
+@using System.Net.Http.Json
+@inject NavigationManager Navigation
+@inject HttpClient Http
+@inject IJSRuntime JSRuntime
+
+<div class="search-container">
+    <input type="text" 
+           class="search-input" 
+           placeholder="Tìm kiếm sản phẩm..." 
+           value="@searchQuery"
+           @oninput="OnSearchInputChanged"
+           @onkeypress="HandleKeyPress" />
+    <button class="search-button" @onclick="Search">
+        <i class="fas fa-search"></i>
+    </button>
+    
+    @if (showResults && results.Any())
+    {
+        <div class="search-results" @onclick:stopPropagation="true">
+            @foreach (var product in results.Take(5))
+            {
+                <div class="search-result-item" @onclick="() => NavigateToProduct(product.product_id)">
+                    <img src="/product_images/@product.product_image" 
+                         alt="@product.product_name" 
+                         class="search-result-img" />
+                    <div class="search-result-info">
+                        <div class="search-result-name">@product.product_name</div>
+                        <div class="search-result-price">
+                            @((product.product_discount_price ?? product.product_price).ToString("N0")) ₫
+                        </div>
+                    </div>
+                </div>
+            }
+            @if (results.Count > 5)
+            {
+                <div class="search-result-more" @onclick="ViewAllResults">
+                    Xem thêm @(results.Count - 5) kết quả...
+                </div>
+            }
+        </div>
+    }
+</div>
+
+<style>
+    .search-results {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+        margin-top: 8px;
+        max-height: 400px;
+        overflow-y: auto;
+        z-index: 1000;
+    }
+    
+    .search-result-item {
+        display: flex;
+        align-items: center;
+        padding: 12px;
+        cursor: pointer;
+        transition: background 0.2s;
+        border-bottom: 1px solid #f0f0f0;
+    }
+    
+    .search-result-item:hover {
+        background: #f8f9fa;
+    }
+    
+    .search-result-img {
+        width: 60px;
+        height: 60px;
+        object-fit: cover;
+        border-radius: 8px;
+        margin-right: 12px;
+    }
+    
+    .search-result-info {
+        flex: 1;
+    }
+    
+    .search-result-name {
+        font-weight: 600;
+        color: #2C3E50;
+        margin-bottom: 4px;
+    }
+    
+    .search-result-price {
+        color: #FF6B6B;
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+    
+    .search-result-more {
+        padding: 12px;
+        text-align: center;
+        color: var(--primary-color);
+        font-weight: 600;
+        cursor: pointer;
+        border-top: 1px solid #f0f0f0;
+    }
+    
+    .search-result-more:hover {
+        background: #f8f9fa;
+    }
+</style>
+
+@code {
+    private string searchQuery = "";
+    private List<Product> results = new();
+    private bool showResults = false;
+    
+    protected override async Task OnParametersSetAsync()
+    {
+        await base.OnParametersSetAsync();
+    }
+    
+    private async Task HandleSearch()
+    {
+        if (string.IsNullOrWhiteSpace(searchQuery))
+        {
+            showResults = false;
+            return;
+        }
+        
+        try
+        {
+            var response = await Http.GetFromJsonAsync<List<Product>>($"/Home/SearchProducts?q={Uri.EscapeDataString(searchQuery)}");
+            results = response ?? new();
+            showResults = results.Any();
+        }
+        catch
+        {
+            showResults = false;
+        }
+    }
+    
+    private async Task OnSearchInputChanged(ChangeEventArgs e)
+    {
+        searchQuery = e.Value?.ToString() ?? "";
+        await HandleSearch();
+    }
+    
+    private void HandleKeyPress(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            Search();
+        }
+    }
+    
+    private void Search()
+    {
+        if (!string.IsNullOrWhiteSpace(searchQuery))
+        {
+            Navigation.NavigateTo($"/Home/AllProducts?q={Uri.EscapeDataString(searchQuery)}");
+        }
+    }
+    
+    private void NavigateToProduct(int productId)
+    {
+        Navigation.NavigateTo($"/Home/ProductDetail/{productId}");
+    }
+    
+    private void ViewAllResults()
+    {
+        Search();
+    }
+}
+

@@ -1,0 +1,5 @@
+@model int
+<a asp-controller="Cart" asp-action="Index" class="nav-link position-relative">
+    <i class="fas fa-shopping-cart"></i>
+    @if (Model > 0) { <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: .6em;">@Model</span> }
+</a>

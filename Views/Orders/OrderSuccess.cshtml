@@ -1,0 +1,55 @@
+@model MTKPM_FE.Models.Order
+@{
+    ViewData["Title"] = "Đặt hàng thành công";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Styles {
+    <style>
+        .success-card {
+            border-radius: .5rem;
+            box-shadow: 0 0.5rem 1.5rem rgba(0,0,0,.1);
+            border: 1px solid #dee2e6;
+        }
+
+        .success-icon {
+            font-size: 4rem;
+            color: #198754; /* Bootstrap success color */
+        }
+
+        .order-details {
+            background-color: #f8f9fa;
+            border-radius: .375rem;
+        }
+    </style>
+}
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card success-card text-center p-4">
+                <div class="card-body">
+                    <i class="fas fa-check-circle success-icon mb-3"></i>
+                    <h2 class="card-title fw-bold mb-3">Đặt hàng thành công!</h2>
+                    <p class="text-muted">
+                        Cảm ơn bạn đã mua hàng. Đơn hàng của bạn đã được ghi nhận và sẽ sớm được xử lý.
+                    </p>
+
+                    <div class="p-3 my-4 order-details">
+                        <p class="mb-1">Mã đơn hàng của bạn là:</p>
+                        <h4 class="fw-bold">#@Model.OrderID</h4>
+                    </div>
+
+                    <div class="d-flex justify-content-center gap-2 mt-4">
+                        <a asp-action="Index" asp-controller="Home" class="btn btn-outline-secondary">
+                            <i class="fas fa-home me-2"></i>Về trang chủ
+                        </a>
+                        <a asp-action="Index" asp-controller="Orders" class="btn btn-primary">
+                            <i class="fas fa-receipt me-2"></i>Xem lịch sử đơn hàng
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

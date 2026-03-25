@@ -1,0 +1,8 @@
+﻿@model List<Category>
+<select class="form-select my-3" name="cat_id">
+    <option hidden>Select Any Category</option>
+    @foreach(var cat in Model)
+    {
+        <option value="@cat.category_id" selected="@(ViewBag.selectedCategoryId != null && cat.category_id == (int)ViewBag.selectedCategoryId)">@cat.category_name</option>
+    }
+</select>

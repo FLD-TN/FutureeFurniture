@@ -1,0 +1,396 @@
+﻿@using Microsoft.AspNetCore.Http
+@{
+    var isLogin = Context.Session.GetString("Role") == "Customer";
+    var username = Context.Session.GetString("CustomerName");
+}
+
+<style>
+    :root {
+        --primary-color: #8B6F5A;
+        --primary-hover: #6B5544;
+        --text-dark: #1A1A1A;
+        --text-muted: #616161;
+        --background-light: #F8F6F3;
+        --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+        --border-light: #E0E0E0;
+    }
+
+    html {
+        scroll-behavior: smooth;
+    }
+
+    header {
+        position: sticky;
+        top: 0;
+        z-index: 4000 !important;
+        background: #fff;
+        box-shadow: var(--shadow-sm);
+    }
+
+    .container {
+        max-width: 1200px;
+    }
+
+    .text-primary-custom {
+        color: var(--primary-color) !important;
+        transition: color 0.2s ease;
+    }
+
+    .text-primary-custom:hover {
+        color: var(--primary-hover) !important;
+    }
+
+    /* --- NAVIGATION --- */
+    .main-nav {
+        background: var(--primary-color);
+        padding: 10px 0;
+        position: sticky;
+        top: 64px;
+        z-index: 3000 !important;
+    }
+
+    .main-nav .nav-link {
+        color: #fff !important;
+        font-weight: 500;
+        font-size: 1rem;
+        padding: 10px 18px;
+        border-radius: 8px;
+        transition: all 0.25s ease;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .main-nav .nav-link:hover {
+        background: var(--primary-hover);
+        color: #fff;
+    }
+
+    /* --- USER DROPDOWN --- */
+    .user-dropdown {
+        position: relative;
+        z-index: 5000 !important;
+    }
+
+    .user-dropdown-menu {
+        position: absolute;
+        top: 130%;
+        right: 0;
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+        min-width: 210px;
+        padding: 8px 0;
+        display: none;
+        flex-direction: column;
+        z-index: 6000 !important;
+        opacity: 0;
+        transform: translateY(-5px);
+        transition: opacity 0.25s ease, transform 0.25s ease;
+    }
+
+    .user-dropdown-menu.show {
+        display: flex;
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .user-dropdown-menu a {
+        display: block;
+        padding: 10px 16px;
+        color: #333;
+        text-decoration: none;
+        font-size: 0.95rem;
+        transition: background 0.2s ease, color 0.2s ease;
+    }
+
+    .user-dropdown-menu a i {
+        margin-right: 8px;
+    }
+
+    .user-dropdown-menu a:hover {
+        background: #f5f5f5;
+    }
+
+    .user-dropdown-menu .dropdown-divider {
+        height: 1px;
+        background: #e0e0e0;
+        margin: 6px 0;
+    }
+
+    .user-dropdown-menu a.text-danger:hover {
+        background: #ffecec;
+        color: #c62828 !important;
+    }
+
+    /* --- SEARCH STYLES --- */
+    .search-bar-custom {
+        position: relative;
+        width: 100%;
+    }
+
+    .search-input-custom {
+        width: 100%;
+        padding: 10px 14px;
+        border: 1px solid var(--border-light);
+        border-radius: 12px;
+        font-size: 0.95rem;
+        outline: none;
+        transition: box-shadow 0.12s ease, border-color 0.12s ease;
+        background: #fff;
+        color: var(--text-dark);
+        box-shadow: none;
+    }
+
+    .search-input-custom:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 4px 20px rgba(139,111,90,0.12);
+    }
+
+    #searchResultsContainer {
+        position: absolute;
+        top: calc(100% + 8px);
+        left: 0;
+        right: 0;
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+        border: 1px solid rgba(0,0,0,0.06);
+        max-height: 420px;
+        overflow-y: auto;
+        display: none;
+        z-index: 7000;
+        padding: 6px 6px;
+    }
+
+    #searchResultsContainer.show {
+        display: block;
+    }
+
+    .search-result-item {
+        display: flex;
+        gap: 12px;
+        padding: 8px;
+        align-items: center;
+        cursor: pointer;
+        border-radius: 8px;
+        transition: background 0.12s ease;
+        border-bottom: 1px solid #f2f2f2;
+    }
+
+    .search-result-item:last-child {
+        border-bottom: none;
+    }
+
+    .search-result-item:hover {
+        background: #fbfbfb;
+    }
+
+    .search-result-img {
+        width: 56px;
+        height: 56px;
+        object-fit: cover;
+        border-radius: 6px;
+        flex-shrink: 0;
+        background: #f4f4f4;
+    }
+
+    .search-result-name {
+        font-size: 0.95rem;
+        color: var(--text-dark);
+        line-height: 1.1;
+    }
+
+    .search-result-price {
+        margin-left: auto;
+        color: var(--primary-color);
+        font-weight: 600;
+        font-size: 0.95rem;
+    }
+
+    .search-no-results,
+    .search-error {
+        padding: 12px;
+        color: var(--text-muted);
+        text-align: center;
+    }
+
+    /* small screens: full width dropdown under header content */
+    @@media (max-width: 768px) {
+        #searchResultsContainer {
+            left: 8px;
+            right: 8px;
+            top: calc(100% + 8px);
+            max-height: 360px;
+        }
+        .container {
+            padding-left: 12px;
+            padding-right: 12px;
+        }
+    }
+
+    /* Responsive adjustments for nav */
+    @@media (max-width: 768px) {
+        .main-nav .nav-link {
+            font-size: 0.9rem;
+            padding: 8px 10px;
+        }
+    }
+</style>
+
+<header class="bg-white blur-surface">
+    <div class="container py-3 d-flex justify-content-between align-items-center">
+        <!-- Logo -->
+        <a href="@Url.Action("Index", "Home")" class="logo-link text-decoration-none d-flex align-items-center">
+            <span class="ms-3 fs-4 fw-bold text-primary-custom" style="font-family: 'Poppins', sans-serif;">
+                <i class="fas fa-couch me-2"></i>Nội Thất Xinh
+            </span>
+        </a>
+
+        <!-- Search -->
+        <div class="flex-grow-1 mx-4" style="position: relative; max-width: 900px; min-width: 320px;">
+            <form class="d-flex" onsubmit="return false;">
+                <div class="search-bar-custom" style="width:100%;">
+                    <input id="mainSearchInput" type="text" class="search-input-custom" placeholder="Tìm kiếm sản phẩm..." autocomplete="off" />
+                </div>
+            </form>
+            <div id="searchResultsContainer" class="w-100"></div>
+        </div>
+
+        <!-- User + Cart -->
+        <div class="d-flex align-items-center gap-3">
+            @if (isLogin)
+            {
+                @await Component.InvokeAsync("CartSummary") 
+                @await Component.InvokeAsync("WishlistSummary")
+
+                <div class="user-dropdown" id="userDropdownWrap">
+                    <a href="javascript:void(0);" id="userDropdownBtn" class="text-decoration-none text-dark">
+                        <i class="fas fa-user-circle fs-5"></i>
+                    </a>
+                    <div class="user-dropdown-menu" id="userDropdownMenu">
+                        <a href="@Url.Action("Profile", "Account")"><i class="fas fa-user"></i> Thông tin cá nhân</a>
+                        <a href="@Url.Action("Index", "Orders")"><i class="fas fa-box"></i> Đơn hàng</a>
+                        <div class="dropdown-divider"></div>
+                        <a href="@Url.Action("Logout", "Account")" class="text-danger"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
+                    </div>
+                </div>
+
+                <span class="ms-2 fw-medium" style="color: var(--text-dark);">Xin chào, @username</span>
+            }
+            else
+            {
+                <a href="@Url.Action("Login", "Account")" class="text-decoration-none text-primary-custom me-3">
+                    <i class="fas fa-sign-in-alt me-1"></i> Đăng nhập
+                </a>
+                <a href="@Url.Action("Register", "Account")" class="text-decoration-none text-primary-custom">
+                    <i class="fas fa-user-plus me-1"></i> Đăng ký
+                </a>
+            }
+        </div>
+    </div>
+</header>
+
+<!-- Main Navigation -->
+<nav class="main-nav">
+    <div class="container d-flex justify-content-center flex-wrap gap-2">
+        <a href="@Url.Action("Index", "Home")" class="nav-link"><i class="fas fa-home"></i> Trang chủ</a>
+        <a href="@Url.Action("AllProducts", "Home")" class="nav-link"><i class="fas fa-th-large"></i> Sản phẩm</a>
+        <a href="/blog" class="nav-link"><i class="fas fa-newspaper"></i> Blog</a>
+        <a href="@Url.Action("About", "Home")" class="nav-link"><i class="fas fa-info-circle"></i> Giới thiệu</a>
+        <a href="javascript:void(0);" class="nav-link" data-bs-toggle="modal" data-bs-target="#comingSoonModal"><i class="fas fa-bolt"></i> Khuyến mãi</a>
+        <a href="javascript:void(0);" class="nav-link" data-bs-toggle="modal" data-bs-target="#comingSoonModal"><i class="fas fa-gift"></i> Best Seller</a>
+        <a href="@Url.Action("Contact", "Home")" class="nav-link"><i class="fas fa-phone"></i> Liên hệ</a>
+    </div>
+</nav>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const btn = document.getElementById('userDropdownBtn');
+    const menu = document.getElementById('userDropdownMenu');
+
+    if (!btn || !menu) return;
+
+    // Toggle dropdown
+    btn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        menu.classList.toggle('show');
+    });
+
+    // Đóng khi click ra ngoài
+    document.addEventListener('click', function (e) {
+        if (!menu.contains(e.target) && !btn.contains(e.target)) {
+            menu.classList.remove('show');
+        }
+    });
+});
+  // debounce helper
+  function debounce(fn, delay) {
+    let t;
+    return function() {
+      const ctx = this, args = arguments;
+      clearTimeout(t);
+      t = setTimeout(() => fn.apply(ctx, args), delay);
+    };
+  }
+
+  (function() {
+    const input = document.getElementById('mainSearchInput');
+    const results = document.getElementById('searchResultsContainer');
+    if (!input || !results) return;
+
+    function renderList(data) {
+      if (!Array.isArray(data) || data.length === 0) {
+        results.innerHTML = '<div class="p-3 text-center text-muted">Không tìm thấy sản phẩm phù hợp.</div>';
+        results.classList.add('show');
+        return;
+      }
+      results.innerHTML = data.map(p => `
+        <div class="search-result-item" onclick="window.location='/Home/ProductDetail/${p.product_id}'">
+          <img src="/product_images/${p.product_image}" class="search-result-img" />
+          <div class="search-result-name">${p.product_name}</div>
+          <div class="search-result-price">${(p.product_discount_price ?? p.product_price).toLocaleString('vi-VN')} ₫</div>
+        </div>
+      `).join('');
+      results.classList.add('show');
+    }
+
+    async function doSearch(q) {
+      const kw = q.trim();
+      if (!kw) {
+        results.innerHTML = '';
+        results.classList.remove('show');
+        return;
+      }
+      try {
+        const res = await fetch(`/Home/SearchProducts?q=${encodeURIComponent(kw)}`);
+        const data = await res.json();
+        renderList(data);
+      } catch (e) {
+        results.innerHTML = '<div class="p-3 text-center text-muted">Lỗi khi tìm kiếm.</div>';
+        results.classList.add('show');
+      }
+    }
+
+    const handler = debounce(function(e) {
+      doSearch(this.value || '');
+    }, 220);
+
+    input.addEventListener('input', handler);
+
+    // hide when click outside
+    document.addEventListener('click', function(e) {
+      if (!results.contains(e.target) && !input.contains(e.target)) {
+        results.classList.remove('show');
+      }
+    });
+
+    // keep results briefly on blur so clicks register
+    input.addEventListener('blur', function() {
+      setTimeout(() => results.classList.remove('show'), 150);
+    });
+    input.addEventListener('focus', function() {
+      if (results.innerHTML.trim() !== '') results.classList.add('show');
+    });
+  })();
+</script>

@@ -1,0 +1,106 @@
+﻿@model MTKPM_FE.Models.ContactMessage
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Liên hệ";
+}
+<!-- Breadcrumb: Trang chủ / Liên hệ -->
+<!-- Breadcrumb: Trang chủ / Liên hệ -->
+<div style="background: #F8F6F3;">
+    <div class="container py-2">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0" style="background: transparent;">
+                <li class="breadcrumb-item">
+                    <a href="@Url.Action("Index", "Home")" style="color: #8B6F5A; font-weight: 600; text-decoration: none;">
+                        Trang chủ
+                    </a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page" style="color: #8B6F5A; font-weight: 600;">
+                    Liên hệ
+                </li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="container py-4">
+    <div class="row gy-4 align-items-start">
+        <!-- Cột trái: Thông tin liên hệ -->
+        <div class="col-12 col-md-6">
+            <h4 class="fw-bold mb-3">Bạn cần được hỗ trợ?</h4>
+            <p>
+                Đối với bất kỳ nhận xét, câu hỏi hoặc đề xuất liên quan đến tài khoản của bạn, vui lòng liên hệ với nhóm hỗ trợ của shop:
+                <br>
+                <strong>Email:</strong>
+                <a href="mailto:KHOABEN10@gmail.com">KHOABEN10@gmail.com</a>
+            </p>
+            <h5 class="fw-bold mt-4 mb-2">Bạn có ý tưởng?</h5>
+            <p>
+                Đối với các câu hỏi chung, đối tác, truyền thông: <br>
+                <strong>Email:</strong>
+                <a href="mailto:KHOABEN10@gmail.com">KHOABEN10@gmail.com</a>
+            </p>
+            <h5 class="fw-bold mt-4 mb-2">Bộ phận bán hàng</h5>
+            <p>
+                Đối với các yêu cầu bán hàng, liên hệ với nhóm bán hàng qua:
+                <br>
+                <a href="https://facebook.com/" target="_blank" class="me-2 text-secondary fs-5"><i class="fab fa-facebook"></i></a>
+                <a href="https://instagram.com/" target="_blank" class="me-2 text-secondary fs-5"><i class="fab fa-instagram"></i></a>
+                <a href="https://zalo.me/" target="_blank" class="me-2 text-secondary fs-5"><i class="fa fa-comment"></i></a>
+                <a href="mailto:KHOABEN10@gmail.com" target="_blank" class="me-2 text-secondary fs-5"><i class="fa fa-envelope"></i></a>
+            </p>
+            <h5 class="fw-bold mt-5 mb-2">Cửa Hàng Nội Thất Xinh</h5>
+            <ul class="list-unstyled mb-2">
+                <li><strong>Địa chỉ:</strong> 806 Lê Quang Đạo, Hóc Môn Commune, Ho Chi Minh City</li>
+                <li><strong>Hotline:</strong> <a href="tel:0123456789">0123456789</a></li>
+                <li><strong>Email:</strong> <a href="mailto:KHOABEN10@gmail.com">KHOABEN10@gmail.com</a></li>
+            </ul>
+            <h6 class="fw-bold mt-4 mb-2">Thông Tin Chuyển Khoản</h6>
+            <ul class="list-unstyled">
+                <li><strong>Tên tài khoản:</strong> Nguyễn Van Khoa</li>
+                <li><strong>Ngân hàng:</strong> MBBank</li>
+                <li><strong>Số tài khoản:</strong> 0123456789</li>
+            </ul>
+        </div>
+
+        <!-- Cột phải: Form + Maps -->
+        <div class="col-12 col-md-6">
+            <h4 class="fw-bold mb-3">Gửi tin nhắn cho chúng mình</h4>
+            <p>
+                Bạn có thông tin cần liên hệ, hợp tác, hãy để lại thông tin bên dưới. Chúng tôi sẽ phản hồi sớm nhất!
+            </p>
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+            }
+            <form asp-action="Contact" method="post">
+                @Html.AntiForgeryToken()
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="mb-3">
+                    <label asp-for="Name" class="form-label">Họ và tên</label>
+                    <input asp-for="Name" class="form-control" placeholder="Nhập họ tên...">
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Email" class="form-label">Email</label>
+                    <input asp-for="Email" class="form-control" placeholder="Nhập email...">
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Message" class="form-label">Nội dung liên hệ</label>
+                    <textarea asp-for="Message" class="form-control" rows="3" placeholder="Nội dung liên hệ..."></textarea>
+                    <span asp-validation-for="Message" class="text-danger"></span>
+                </div>
+                <button type="submit" class="btn px-4" style="background: #8B6F5A; color: #fff; border: none;">Gửi</button>
+            </form>
+            <div class="mt-4">
+                <h6 class="fw-bold mb-2">Vị trí cửa hàng trên bản đồ</h6>
+                <div class="ratio ratio-4x3" style="max-width:400px; margin:auto; position: relative;">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3918.2926427495986!2d106.6006639!3d10.865332099999998!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752b088de30f3b%3A0xd2140740d360f705!2zVHLGsOG7nW5nIMSQ4bqhaSBo4buNYyBOZ2_huqFpIG5n4buvIC0gVGluIGjhu41jIFRow6BuaCBwaOG7kSBI4buTIENow60gTWluaCAoSFVGTElUKSBDxqEgc-G7nyBIw7NjIE3DtG4!5e0!3m2!1svi!2s!4v1762520960277!5m2!1svi!2s" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                </div>
+                <div class="small mt-2 text-muted text-center">
+                    Kéo hoặc phóng để tương tác với bản đồ.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

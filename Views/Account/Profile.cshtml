@@ -1,0 +1,94 @@
+@model MTKPM_FE.Models.Customer
+@{
+    ViewData["Title"] = "Thông tin cá nhân";
+}
+
+<div class="container-fluid px-4 mt-4">
+    <h2 class="text-center text-uppercase mb-4" style="letter-spacing: 3px;">Thông tin cá nhân</h2>
+</div>
+
+<div class="row">
+    <div class="col-md-2"></div>
+    <div class="col-md-8">
+
+        @* --- Thông báo thành công hoặc lỗi --- *@
+        @if (ViewBag.Success != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="fas fa-check-circle me-2"></i>@ViewBag.Success
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+
+        @if (ViewBag.Error != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="fas fa-exclamation-circle me-2"></i>@ViewBag.Error
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+
+        @* --- Khung thông tin người dùng --- *@
+        <div class="card shadow-lg rounded-4 border-0 mb-4">
+            <div class="card-body p-4">
+                <div class="text-center mb-4">
+                    @if (!string.IsNullOrEmpty(Model.customer_image))
+                    {
+                        <img src="~/customer_images/@Model.customer_image"
+                             alt="Ảnh đại diện"
+                             class="rounded-circle shadow"
+                             style="width:180px; height:180px; object-fit:cover;"
+                             onerror="this.src='/images/default-avatar.png'; this.onerror=null;" />
+                    }
+                    else
+                    {
+                        <div class="rounded-circle bg-light d-inline-flex align-items-center justify-content-center shadow"
+                             style="width:180px; height:180px;">
+                            <i class="fas fa-user fa-5x text-muted"></i>
+                        </div>
+                    }
+                </div>
+
+                <h4 class="text-center mb-4" style="color: #8B6F5A;">@Model.customer_name</h4>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold">Email</label>
+                        <input type="text" class="form-control" value="@Model.customer_email" readonly />
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold">Số điện thoại</label>
+                        <input type="text" class="form-control" value="@Model.customer_phone" readonly />
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold">Giới tính</label>
+                        <input type="text" class="form-control" value="@Model.customer_gender" readonly />
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold">Quốc gia</label>
+                        <input type="text" class="form-control" value="@Model.customer_country" readonly />
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold">Thành phố</label>
+                        <input type="text" class="form-control" value="@Model.customer_city" readonly />
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold">Địa chỉ</label>
+                        <textarea class="form-control" rows="2" readonly>@Model.customer_address</textarea>
+                    </div>
+                </div>
+
+                <div class="text-center mt-4">
+                    <a asp-controller="Account" asp-action="EditProfile" class="btn px-4" style="background: #8B6F5A; color: #fff; border: none;">
+                        <i class="fas fa-edit me-2"></i>Chỉnh sửa thông tin
+                    </a>
+                    <a asp-controller="Account" asp-action="Logout" class="btn btn-outline-danger px-4 ms-2">
+                        <i class="fas fa-sign-out-alt me-2"></i>Đăng xuất
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="col-md-2"></div>
+</div>

@@ -1,0 +1,41 @@
+@model IEnumerable<MTKPM_FE.Models.ContactMessage>
+@{
+    ViewData["Title"] = "Tin nhắn Liên hệ";
+}
+
+<div class="container-fluid px-4">
+    <h2 class="mt-4 text-center text-uppercase" style="letter-spacing:4px">@ViewData["Title"]</h2>
+
+    <div class="card mt-4">
+        <div class="card-header">
+            <i class="fas fa-envelope me-1"></i>
+            Danh sách tin nhắn từ khách hàng
+        </div>
+        <div class="card-body">
+            @if (Model != null && Model.Any())
+            {
+                <div class="accordion" id="contactMessagesAccordion">
+                    @foreach (var message in Model)
+                    {
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="heading-@message.Id">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-@message.Id" aria-expanded="false" aria-controls="collapse-@message.Id">
+                                    <strong>@message.Name</strong> (@message.Email) - <em class="ms-2 text-muted">@message.CreatedAt.ToString("dd/MM/yyyy HH:mm")</em>
+                                </button>
+                            </h2>
+                            <div id="collapse-@message.Id" class="accordion-collapse collapse" aria-labelledby="heading-@message.Id" data-bs-parent="#contactMessagesAccordion">
+                                <div class="accordion-body">
+                                    @Html.Raw(message.Message.Replace("\n", "<br />"))
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <p class="text-center text-muted">Chưa có tin nhắn nào.</p>
+            }
+        </div>
+    </div>
+</div>

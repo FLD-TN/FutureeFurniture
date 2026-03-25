@@ -1,0 +1,31 @@
+@using Microsoft.JSInterop
+@inject IJSRuntime JS
+
+<div class="card shadow-sm h-100">
+    <div class="card-header">
+        Doanh thu 12 tháng
+    </div>
+    <div class="card-body">
+        <div style="height:300px">
+            <canvas id="revenueBarChart"></canvas>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public List<string> Labels { get; set; }
+    [Parameter] public List<decimal> Data { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JS.InvokeVoidAsync(
+                "renderBarChart", // Giả sử tên hàm JS là renderBarChart
+                "revenueBarChart", // ID chính xác của thẻ canvas
+                Labels,
+                Data
+            );
+        }
+    }
+}

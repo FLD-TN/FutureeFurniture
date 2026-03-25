@@ -1,0 +1,30 @@
+﻿@model Tuple<string, string, List<MTKPM_FE.Models.Product>>  // Item1: DisplayName, Item2: Slug, Item3: ProductList
+
+@{
+    var displayName = Model.Item1;
+    var slug = Model.Item2;
+    var products = Model.Item3;
+}
+
+@if (products != null && products.Any())
+{
+    <section class="mt-5" id="@($"{slug}Section")">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4 class="fw-bold" style="color: #8B6F5A;">
+                    <i class="fas fa-leaf me-2"></i> @displayName
+                </h4>
+                <a asp-controller="Home" asp-action="AllProducts" asp-route-categories="@slug"
+                   class="fw-bold text-decoration-none" style="color: #8B6F5A;">
+                    Xem thêm <i class="fas fa-chevron-right"></i>
+                </a>
+            </div>
+            <div class="row g-4">
+                @foreach (var product in products.Take(8))
+                {
+                    @await Html.PartialAsync("_ProductCard", product)
+                }
+            </div>
+        </div>
+    </section>
+}

@@ -1,0 +1,174 @@
+@model MTKPM_FE.Helpers.PaginatedList<MTKPM_FE.Models.Blog>
+
+@{
+    ViewData["Title"] = "Tin tức & Blog";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    /* Tổng layout thẻ blog */
+    .blog-card {
+        border: none;
+        border-radius: 18px;
+        overflow: hidden;
+        background: #fff;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        transition: all 0.25s ease;
+    }
+
+    .blog-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+    }
+
+    /* Ảnh */
+    .blog-thumbnail {
+        width: 100%;
+        height: 240px;
+        object-fit: cover;
+    }
+
+    /* Tiêu đề */
+    .blog-title a {
+        color: #1E1E1E;
+        text-decoration: none;
+        font-weight: 700;
+        transition: 0.2s;
+    }
+
+    .blog-title a:hover {
+        color: #8B6F5A;
+    }
+
+    /* Mô tả ngắn hiển thị đúng 3 dòng */
+    .blog-desc {
+        color: #555;
+        font-size: 1rem;
+        line-height: 1.6;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .blog-date {
+        color: #888;
+        font-size: 0.9rem;
+    }
+
+    @@media (max-width: 768px) {
+        .blog-thumbnail {
+            height: 180px;
+        }
+    }
+</style>
+
+
+<!-- Breadcrumb -->
+<div style="background: #F8F6F3;">
+    <div class="container py-2">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0 bg-transparent">
+                <li class="breadcrumb-item">
+                    <a asp-controller="Home" asp-action="Index"
+                       class="fw-semibold text-decoration-none" style="color: #8B6F5A;">
+                        Trang chủ
+                    </a>
+                </li>
+                <li class="breadcrumb-item active fw-semibold"
+                    aria-current="page" style="color: #8B6F5A;">
+                    @ViewData["Title"]
+                </li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+
+<div class="container my-5">
+    <h2 class="section-title mb-5">@ViewData["Title"]</h2>
+
+    @if (Model.Any())
+    {
+        <div class="row gy-4 justify-content-center">
+
+            @foreach (var blog in Model)
+            {
+                <div class="col-lg-10">
+                    <div class="blog-card p-0">
+                        <div class="row g-0">
+
+                            <!-- IMAGE -->
+                            <div class="col-md-4">
+                                <a href="/blog/@blog.slug">
+                                    <img src="~/blog_images/@blog.blog_image"
+                                         class="blog-thumbnail"
+                                         alt="@blog.blog_title" />
+                                </a>
+                            </div>
+
+                            <!-- CONTENT -->
+                            <div class="col-md-8">
+                                <div class="card-body p-4">
+
+                                    <!-- Title -->
+                                    <h4 class="blog-title mb-2">
+                                        <a href="/blog/@blog.slug">@blog.blog_title</a>
+                                    </h4>
+
+                                    <!-- Short Description -->
+                                    @{
+                                        var text = blog.blog_description ?? "";
+                                        text = System.Text.RegularExpressions.Regex.Replace(text, "<.*?>", "");
+                                        var shortText = text.Length > 180 ? text.Substring(0, 180) + "..." : text;
+                                    }
+
+                                    <p class="blog-desc">@shortText</p>
+
+                                    <!-- Date -->
+                                    <p class="blog-date mt-3">
+                                        <i class="bi bi-calendar3"></i>
+                                        Đăng ngày @blog.CreatedAt.ToString("dd/MM/yyyy")
+                                    </p>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            }
+
+        </div>
+
+        <!-- Pagination -->
+        <nav aria-label="Page navigation" class="mt-5">
+            <ul class="pagination justify-content-center">
+
+                <!-- Prev -->
+                <li class="page-item @(Model.HasPreviousPage ? "" : "disabled")">
+                    <a class="page-link" href="/blog?page=@(Model.PageIndex - 1)">&laquo;</a>
+                </li>
+
+                <!-- Numbers -->
+                @for (int i = 1; i <= Model.TotalPages; i++)
+                {
+                    <li class="page-item @(i == Model.PageIndex ? "active" : "")">
+                        <a class="page-link" href="/blog?page=@i">@i</a>
+                    </li>
+                }
+
+                <!-- Next -->
+                <li class="page-item @(Model.HasNextPage ? "" : "disabled")">
+                    <a class="page-link" href="/blog?page=@(Model.PageIndex + 1)">&raquo;</a>
+                </li>
+
+            </ul>
+        </nav>
+
+    }
+    else
+    {
+        <div class="alert alert-secondary text-center">Chưa có bài viết nào.</div>
+    }
+</div>

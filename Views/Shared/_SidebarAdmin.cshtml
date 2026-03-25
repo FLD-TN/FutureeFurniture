@@ -1,0 +1,77 @@
+﻿@using Microsoft.AspNetCore.Http
+
+<div class="offcanvas-lg offcanvas-start bg-dark text-white h-100 d-flex flex-column" tabindex="-1" id="sidebarOffcanvas" style="width: 260px; background-color: #1e293b !important;">
+
+    <div class="d-flex align-items-center gap-3 p-3 border-bottom border-secondary" style="height: 70px;">
+        <div class="bg-primary rounded-3 p-2 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; flex-shrink: 0;">
+            <i class="bi bi-speedometer2 text-white fs-5"></i>
+        </div>
+        <div style="overflow: hidden;">
+            <div class="fw-bold fs-5 text-white text-nowrap">Admin Panel</div>
+            <div class="small text-white-50 text-nowrap">Nội Thất Xinh</div>
+        </div>
+        <button type="button" class="btn-close btn-close-white ms-auto d-lg-none" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+
+    <div class="p-0 flex-grow-1 overflow-y-auto">
+        <div class="nav flex-column p-3 gap-1">
+            <div class="small text-uppercase text-white-50 fw-bold mb-2 ms-2" style="font-size: 11px;">Trang chủ</div>
+
+            <a href="@Url.Action("Index", "Admin")" class="nav-link text-white-50 d-flex align-items-center gap-3 p-3 rounded-3 @(ViewContext.RouteData.Values["Action"]?.ToString() == "Index" ? "active-menu" : "")">
+                <i class="bi bi-grid-fill flex-shrink-0"></i> <span class="text-nowrap">Tổng quan</span>
+            </a>
+
+            <a href="@Url.Action("Profile", "Admin")" class="nav-link text-white-50 d-flex align-items-center gap-3 p-3 rounded-3 @(ViewContext.RouteData.Values["Action"]?.ToString() == "Profile" ? "active-menu" : "")">
+                <i class="bi bi-person-badge flex-shrink-0"></i> <span class="text-nowrap">Thông tin cá nhân</span>
+            </a>
+
+            <div class="small text-uppercase text-white-50 fw-bold mt-4 mb-2 ms-2" style="font-size: 11px;">Quản lý</div>
+
+            <a href="@Url.Action("fetchCustomer", "Admin")" class="nav-link text-white-50 d-flex align-items-center gap-3 p-3 rounded-3">
+                <i class="bi bi-people-fill flex-shrink-0"></i> <span class="text-nowrap">Khách hàng</span>
+            </a>
+            <a href="@Url.Action("fetchCategory", "Admin")" class="nav-link text-white-50 d-flex align-items-center gap-3 p-3 rounded-3">
+                <i class="bi bi-tags-fill flex-shrink-0"></i> <span class="text-nowrap">Danh mục</span>
+            </a>
+            <a href="@Url.Action("fetchProduct", "Admin")" class="nav-link text-white-50 d-flex align-items-center gap-3 p-3 rounded-3">
+                <i class="bi bi-box-seam-fill flex-shrink-0"></i> <span class="text-nowrap">Sản phẩm</span>
+            </a>
+            <a href="@Url.Action("Orders", "Admin")" class="nav-link text-white-50 d-flex align-items-center gap-3 p-3 rounded-3">
+                <i class="bi bi-cart-check-fill flex-shrink-0"></i> <span class="text-nowrap">Đơn hàng</span>
+            </a>
+            <a href="@Url.Action("ViewFeedback", "Admin")" class="nav-link text-white-50 d-flex align-items-center gap-3 p-3 rounded-3">
+                <i class="bi bi-chat-dots-fill flex-shrink-0"></i> <span class="text-nowrap">Feedback</span>
+            </a>
+            <a href="@Url.Action("ManageBlogs", "Admin")" class="nav-link text-white-50 d-flex align-items-center gap-3 p-3 rounded-3">
+                <i class="bi bi-newspaper flex-shrink-0"></i> <span class="text-nowrap">Blog</span>
+            </a>
+        </div>
+    </div>
+
+    <div class="mt-auto p-3 border-top border-secondary text-center bg-dark">
+        <small class="text-white-50 d-block">© 2026 Nội Thất Xinh</small>
+        <small class="text-white-50">Flight Admin</small>
+    </div>
+</div>
+
+<style>
+    /* CSS ép các item luôn nằm trên 1 dòng */
+    .nav-link {
+        display: flex !important;
+        align-items: center !important;
+        white-space: nowrap !important;
+        transition: 0.3s;
+    }
+
+        .nav-link:hover {
+            background: rgba(255,255,255,0.08);
+            color: white !important;
+            transform: translateX(5px);
+        }
+
+    .active-menu {
+        background: linear-gradient(90deg, #3b82f6 0%, #2563eb 100%) !important;
+        color: white !important;
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    }
+</style>
